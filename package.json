@@ -11,10 +11,12 @@
   },
   "proxy": "http://localhost:8090/",
   "scripts": {
-    "build": "webpack -p --mode production",
-    "dev": "concurrently \"yarn run watch:server\" \"yarn run watch:client \"",
+    "build": "webpack -p --mode production ",
+    "dev": "concurrently \"yarn run watch:server\" \"yarn run watch:client \" ",
     "watch:server": "nodemon ./server/server.js",
-    "watch:client": "webpack-dev-server --mode development --config ./webpack.dev.config.js --hot"
+    "watch:client": "webpack-dev-server --mode development --config ./webpack.dev.config.js --hot ",
+    "build:css": "postcss client/stylesTailwind/tailwind.css -o client/stylesTailwind/main.css ",
+    "build:watch": "postcss client/stylesTailwind/tailwind.css -o client/stylesTailwind/main.css --watch"
   },
   "dependencies": {
     "axios": "^0.21.0",
@@ -34,11 +36,15 @@
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.12.1",
+    "autoprefixer": "^10.0.1",
     "concurrently": "^5.3.0",
     "css-loader": "^5.0.0",
     "nodemon": "^2.0.6",
+    "postcss-cli": "^8.1.0",
+    "postcss-loader": "^4.0.4",
     "react-hot-loader": "^4.13.0",
     "style-loader": "^2.0.0",
+    "tailwindcss": "^1.9.6",
     "webpack": "4.32.2",
     "webpack-cli": "3.3.0",
     "webpack-dev-server": "^3.11.0"
