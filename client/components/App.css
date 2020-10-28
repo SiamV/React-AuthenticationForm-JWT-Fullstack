@@ -1,0 +1,50 @@
+.site-wrapper {
+    display: grid;
+
+    grid-template-areas: 'header nav account ' 'feed feed secondMenu ' 'footer footer footer';
+
+    grid-template-rows: 10vh 80vh 10vh;
+    grid-template-columns: 20vw 60vw 20vw;
+}
+
+.site-wrapper .site-wrapper-header {
+    grid-area: header;
+    background-color: #8bff79;
+    margin: 5px;
+}
+
+.site-wrapper .site-wrapper-nav {
+    grid-area: nav;
+    text-align: center;
+    background-color:  #8bff79;
+    margin: 5px;
+}
+
+.site-wrapper .site-wrapper-account {
+    grid-area: account;
+    text-align: center;
+    background-color: #8bff79;
+    margin: 5px;
+}
+
+.site-wrapper .site-wrapper-feed {
+    grid-area: feed;
+    background-color: #8bff79;
+    margin: 5px;
+    height: auto;
+}
+
+.site-wrapper .site-wrapper-secondMenu {
+    grid-area: secondMenu;
+    text-align: center;
+    background-color: #8bff79;
+    margin: 5px;
+    height: auto;
+}
+
+.site-wrapper .site-wrapper-footer{
+    grid-area: footer;
+    background-color: #8bff79;
+    margin: 5px;
+    height: auto;
+}
