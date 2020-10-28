@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "../redux/store";
 import './App.css'
 import MainMenu from './MainMenu/MainMenu';
 import Login from './Login/Login';
@@ -39,7 +41,9 @@ const AppContainer = () => {
 const App = () => {
   return (
     <BrowserRouter>
-      <AppContainer />
+      <Provider store={store}>
+        <AppContainer />
+      </Provider>
     </BrowserRouter>
   )
 }
