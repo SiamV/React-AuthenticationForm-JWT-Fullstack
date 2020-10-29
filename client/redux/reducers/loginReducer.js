@@ -1,18 +1,23 @@
 let defaultState = {
-    id: null,
-    login: null,
-    email: null,
-    isLogin: false,
-    captchaUrl: null
+    login: '',
+    password: ''
 }
 
-const SET_MY_DATA = 'loginReducer/SET_MY_DATA';
+const UPDATE_LOGIN = 'loginReducer/UPDATE_LOGIN';
+const UPDATE_PASSWORD = 'loginReducer/UPDATE_PASSWORD';
 
 const loginReducer = (state = defaultState, action) => {
     switch (action.type) {
-        case SET_MY_DATA: {
+        case UPDATE_LOGIN: {
             return {
-
+                ...state,
+                login: action.login
+            }
+        }
+        case UPDATE_PASSWORD: {
+            return {
+                ...state,
+                password: action.password
             }
         }
         default:
@@ -20,9 +25,14 @@ const loginReducer = (state = defaultState, action) => {
     }
 }
 
-export const setMyDataAC = () => ({
-    type: SET_MY_DATA,
-    data: {}
+export const setLoginFieldAC = (login) => ({
+    type: UPDATE_LOGIN, 
+    login
+})
+
+export const setPasswordFieldAC = (password) => ({
+    type: UPDATE_PASSWORD, 
+    password
 })
 
 export default loginReducer;
