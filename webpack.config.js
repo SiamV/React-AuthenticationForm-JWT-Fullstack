@@ -4,8 +4,13 @@ module.exports = {
     path: __dirname + "/client/build/",
     filename: 'bundle.js'
   },
-  devtool: false,
   mode: 'production',
+  devtool: false,
+  performance: {
+    hints: 'warning',
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000
+  },
   module: {
     rules: [
       {

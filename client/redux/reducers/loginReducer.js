@@ -35,4 +35,11 @@ export const setPasswordFieldAC = (password) => ({
     password
 })
 
+export const signInThunkCreator = (login, password) => async (dispatch) => {
+    // let data = await updateUsersStatus(status)
+    // if (data.resultCode === 0) {
+    //     dispatch(setUsersStatus(status))
+    // }
+}
+
 export default loginReducer;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import '../../stylesTailwind/main.css';
-import { setLoginFieldAC, setPasswordFieldAC } from '../../redux/reducers/loginReducer'
+import { setLoginFieldAC, setPasswordFieldAC, signInThunkCreator } from '../../redux/reducers/loginReducer'
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -39,7 +39,11 @@ const Login = () => {
                         <p className="text-red-500 text-xs italic">Please choose a password.</p>
                     </div>
                     <div className="flex items-center justify-between">
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="button"
+                            onClick={() => {
+                                dispatch(signInThunkCreator(login, password))
+                            }}>
                             Sign In
                         </button>
                     </div>

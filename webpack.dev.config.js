@@ -1,8 +1,8 @@
 module.exports = {
   entry: __dirname + '/client/main.js',
   output: {
-    publicPath: '/client/js/',
-    path: __dirname + "/client/js/",
+    publicPath: '/client/build/',
+    path: __dirname + "/client/build/",
     filename: 'bundle.js'
   },
   devtool: 'cheap-module-eval-source-map',
