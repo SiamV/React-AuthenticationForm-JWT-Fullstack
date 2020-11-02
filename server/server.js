@@ -28,8 +28,19 @@ mongoose.connect('mongodb+srv://adminDB:ZyYcph4wflbaXu5p@auth.rlxve.mongodb.net/
 const userSchema = new mongoose.Schema(
     {
         "id": Number,
-        "email": String,
-        "password": String,
+        "email": {
+            type: String,
+            require: true,
+            unique: true
+        },
+        "password": {
+            type: String,
+            require: true
+        },
+        "role": {
+            type: [String],
+            default: ["user"]
+        }
     },
     { versionKey: false }
 )
@@ -40,6 +51,7 @@ userSchema.pre('save', async function(next) {
         return next()
     }
     this.password = bcrypt.hashSync(this.password);
+    return next();
 })
 
 const User = mongoose.model('auth', userSchema, 'auth');
