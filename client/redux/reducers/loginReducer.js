@@ -1,17 +1,21 @@
+import * as axios from "axios";
+
 let defaultState = {
-    login: '',
-    password: ''
+    email: '',
+    password: '',
+    token: ''
 }
 
-const UPDATE_LOGIN = 'loginReducer/UPDATE_LOGIN';
+const UPDATE_EMAIL = 'loginReducer/UPDATE_EMAIL';
 const UPDATE_PASSWORD = 'loginReducer/UPDATE_PASSWORD';
+const CREATE_TOKEN = 'loginReducer/CREATE_TOKEN'
 
 const loginReducer = (state = defaultState, action) => {
     switch (action.type) {
-        case UPDATE_LOGIN: {
+        case UPDATE_EMAIL: {
             return {
                 ...state,
-                login: action.login
+                email: action.email
             }
         }
         case UPDATE_PASSWORD: {
@@ -20,26 +24,34 @@ const loginReducer = (state = defaultState, action) => {
                 password: action.password
             }
         }
+        case CREATE_TOKEN: {
+            return {
+                ...state,
+                token: action.token //need check what we got
+            }
+        }
         default:
             return state;
     }
 }
 
-export const setLoginFieldAC = (login) => ({
-    type: UPDATE_LOGIN, 
-    login
+export const setLoginFieldAC = (email) => ({
+    type: UPDATE_EMAIL,
+    email
 })
 
 export const setPasswordFieldAC = (password) => ({
-    type: UPDATE_PASSWORD, 
+    type: UPDATE_PASSWORD,
     password
 })
 
-export const signInThunkCreator = (login, password) => async (dispatch) => {
-    // let data = await updateUsersStatus(status)
-    // if (data.resultCode === 0) {
-    //     dispatch(setUsersStatus(status))
-    // }
+export const signInThunkCreator = (email, password) => async (dispatch) => {
+    let data = await axios.post('http://localhost:8090/v1/auth/add/user', { email, password}, {
+        headers: { 'Content-Type': 'application/json' }
+    })
+    console.log(data)
+    dispatch({type: CREATE_TOKEN, token: data.token}) //need add data.token but now data doesn't have token.
+
 }
 
 export default loginReducer;

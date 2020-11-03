@@ -5,7 +5,7 @@ import { setLoginFieldAC, setPasswordFieldAC, signInThunkCreator } from '../../r
 
 const Login = () => {
     const dispatch = useDispatch();
-    const login = useSelector(state => state.login.login);
+    const email = useSelector(state => state.login.email);
     const password = useSelector(state => state.login.password);
     return (
         <div className="flex justify-center items-center ">
@@ -18,8 +18,8 @@ const Login = () => {
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             id="login"
                             type="text"
-                            placeholder="Username"
-                            value={login}
+                            placeholder="login/email"
+                            value={email}
                             onChange={(e) => {
                                 dispatch(setLoginFieldAC(e.target.value))
                             }} />
@@ -42,7 +42,7 @@ const Login = () => {
                         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             type="button"
                             onClick={() => {
-                                dispatch(signInThunkCreator(login, password))
+                                dispatch(signInThunkCreator(email, password))
                             }}>
                             Sign In
                         </button>
