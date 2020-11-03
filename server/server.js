@@ -19,7 +19,7 @@ middleware.forEach((it) => app.use(it))
 //constants mongoDB. Use your real url or mongodb://127.0.0.1/nameDB to connect to DB
 // const url = config.url;
 //connect to MongoDB
-mongoose.connect('mongodb+srv://adminDB:ZyYcph4wflbaXu5p@auth.rlxve.mongodb.net/auth', { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
+mongoose.connect('mongodb://localhost:27017/auth', { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
     app.listen(8090, () => {
         console.log(`server is working http://localhost:8090`)
     });
