@@ -27,7 +27,8 @@ const loginReducer = (state = defaultState, action) => {
         case CREATE_TOKEN: {
             return {
                 ...state,
-                token: action.token //need check what we got
+                token: action.token, //need check what we got
+                password: '' 
             }
         }
         default:
@@ -46,7 +47,7 @@ export const setPasswordFieldAC = (password) => ({
 })
 
 export const signInThunkCreator = (email, password) => async (dispatch) => {
-    let data = await axios.post('http://localhost:8090/v1/auth/add/user', { email, password}, {
+    let data = await axios.post('http://localhost:8090/v1/auth/user', { email, password}, {
         headers: { 'Content-Type': 'application/json' }
     })
     console.log(data)

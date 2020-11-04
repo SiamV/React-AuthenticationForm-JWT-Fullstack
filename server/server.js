@@ -19,7 +19,7 @@ const middleware = [
 ]
 middleware.forEach((it) => app.use(it))
 
-passport.use('jwt', passportJWT) //JsonWebToken logic
+passport.use('jwt', passportJWT.jwt) //JsonWebToken logic
 
 const userSchema = new mongoose.Schema(
     {
@@ -50,10 +50,32 @@ userSchema.pre('save', async function (next) {
     return next();
 })
 
-//function for auth
-userSchema.static = {
-    findAndValidateUser: ({email, password}) => {
+//two functions for auth
+userSchema.method({
+    passwordMatches(password) {
+        return bcrypt.compareSync(password, this.password) //compare 2 password. hash and from user
+    }
+})
+userSchema.statics = {
+    async findAndValidateUser({ email, password }) {
+        if (!email) {
+            throw new Error('no email')
+        }
+        if (!password) {
+            throw new Error('no password')
+        }
 
+        const user = await this.findOne({ email }).exec()
+        if (!user) {
+            throw new Error('no user')
+        }
+
+        const isPasswordOk = await user.passwordMatches(password)
+        if (!isPasswordOk) {
+            throw new Error('password incorrect')
+        }
+
+        return user
     }
 }
 
@@ -70,19 +92,25 @@ mongoose.connect(mongoURL = config.url, { useNewUrlParser: true, useUnifiedTopol
 })
 
 //create collection DB
-exports.User = mongoose.model('auth', userSchema, 'auth');
+User = mongoose.model('auth', userSchema, 'auth');
+module.exports = User;
 
 //create Rest API
 app.get('/', (req, res) => {
     res.send('Hello server')
 })
 
-app.post("/v1/auth/add/user", async (req, res) => {
+app.post("/v1/auth/user", async (req, res) => {
     console.log(req.body)
-    const user = await User.findAndValidateUser(req.body)
-    const payload = { uid: user.id }
-    const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
-    res.json({ status: 'ok', token })
+    try {
+        const user = await User.findAndValidateUser(req.body)
+        const payload = { uid: user.id }
+        const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
+        res.json({ status: 'ok', token })
+    } catch (err) {
+        res.json({ status: 'error', err })
+    }
+
 
 
     // const user = new User({
@@ -91,6 +119,15 @@ app.post("/v1/auth/add/user", async (req, res) => {
     // })
     // user.save()
     // res.send(user)
+})
+
+app.post("/v1/auth/add/user", async (req, res) => {
+    const user = new User({
+        email: req.body.email,
+        password: req.body.password
+    })
+    user.save()
+    res.send(user)
 })
 
 // app.listen(config.port, () => {
