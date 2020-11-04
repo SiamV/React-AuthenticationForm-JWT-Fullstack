@@ -3,17 +3,23 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+
 const config = require("../config");
+const passportJWT = require('./manager/passport')
 
 const app = express();
 
 const middleware = [
     cors(),
-    // express.static(path.resolve(__dirname, './assets')),
+    passport.initialize(),
     bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }),
     bodyParser.json({ limit: '50mb', extended: true }),
 ]
 middleware.forEach((it) => app.use(it))
+
+passport.use('jwt', passportJWT) //JsonWebToken logic
 
 const userSchema = new mongoose.Schema(
     {
@@ -44,7 +50,12 @@ userSchema.pre('save', async function (next) {
     return next();
 })
 
-const User = mongoose.model('auth', userSchema, 'auth');
+//function for auth
+userSchema.static = {
+    findAndValidateUser: ({email, password}) => {
+
+    }
+}
 
 //connect to MongoDB
 mongoose.connection.on('connected', () => { console.log('DB is connected') });
@@ -58,33 +69,29 @@ mongoose.connect(mongoURL = config.url, { useNewUrlParser: true, useUnifiedTopol
     });
 })
 
+//create collection DB
+exports.User = mongoose.model('auth', userSchema, 'auth');
+
 //create Rest API
 app.get('/', (req, res) => {
     res.send('Hello server')
 })
 
 app.post("/v1/auth/add/user", async (req, res) => {
-    const user = new User({
-        email: req.body.email,
-        password: req.body.password
-    })
-    user.save()
-    res.send(user)
+    console.log(req.body)
+    const user = await User.findAndValidateUser(req.body)
+    const payload = { uid: user.id }
+    const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
+    res.json({ status: 'ok', token })
 
-    //console.log(req.body)
-    //res.json({status:'ok'})
+
+    // const user = new User({
+    //     email: req.body.email,
+    //     password: req.body.password
+    // })
+    // user.save()
+    // res.send(user)
 })
-
-app.delete("/v1/auth/users/delete/:id", async (req, res) => {
-    try {
-        await User.deleteOne({ _id: req.params.id })
-        res.status(204).send()
-    } catch {
-        res.status(404)
-        res.send({ error: "User doesn't exist!" })
-    }
-})
-
 
 // app.listen(config.port, () => {
     //     console.log(`server is working http://localhost:${config.port}`)
@@ -99,3 +106,14 @@ app.delete("/v1/auth/users/delete/:id", async (req, res) => {
     //     const user = await User.findOne({ _id: req.params.id })
     //     res.send(user)
     // })
+
+    // app.delete("/v1/auth/users/delete/:id", async (req, res) => {
+    //     try {
+    //         await User.deleteOne({ _id: req.params.id })
+    //         res.status(204).send()
+    //     } catch {
+    //         res.status(404)
+    //         res.send({ error: "User doesn't exist!" })
+    //     }
+    // })
+
