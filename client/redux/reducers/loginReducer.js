@@ -51,8 +51,7 @@ export const signInThunkCreator = (email, password) => async (dispatch) => {
         headers: { 'Content-Type': 'application/json' }
     })
     console.log(data)
-    dispatch({type: CREATE_TOKEN, token: data.token}) //need add data.token but now data doesn't have token.
-
+    dispatch({type: CREATE_TOKEN, token: data.data.token}) //need add data.token but now data doesn't have token.
 }
 
 export default loginReducer;

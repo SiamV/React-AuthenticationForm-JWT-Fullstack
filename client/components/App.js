@@ -8,7 +8,8 @@ import Login from './Login/Login';
 import Articles from './Articles/Articles';
 import Header from './Header/Header';
 import Account from './Account/Account';
-import Footer from './Footer/Footer'
+import Footer from './Footer/Footer';
+import PrivateComponent from './Private/PriviteComponent'
 
 //main structure project. Grid css
 const AppContainer = () => {
@@ -26,25 +27,26 @@ const AppContainer = () => {
       <div className={'site-wrapper-feed'}>
         <Route path={'/login'} render={() => <Login />} />
         <Route path={'/articles'} render={() => <Articles />} />
+        <Route exact path={'/hiadmin'} render={() => <PrivateComponent />} />
       </div>
       <div className={'site-wrapper-secondMenu '}>
-        Here will be second Menu
+          Here will be second Menu
         {/* create component */}
-      </div>
-      <div className={'site-wrapper-footer'}>
-        <Footer />
-      </div>
-    </div >
+        </div>
+        <div className={'site-wrapper-footer'}>
+          <Footer />
+        </div>
+      </div >
   )
 }
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Provider store={store}>
-        <AppContainer />
-      </Provider>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Provider store={store}>
+          <AppContainer />
+        </Provider>
+      </BrowserRouter>
   )
 }
 export default App;
