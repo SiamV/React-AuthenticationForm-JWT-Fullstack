@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Route } from "react-router-dom";
 import { Provider } from "react-redux";
+import {useSelector} from 'react-redux';
+
 import store from "../redux/store";
 import './App.css'
 import MainMenu from './MainMenu/MainMenu';
@@ -13,6 +15,7 @@ import PrivateComponent from './Private/PriviteComponent'
 
 //main structure project. Grid css
 const AppContainer = () => {
+  const isAuth = useSelector(s => s.login.isAuth)
   return (
     <div className={'site-wrapper'}>
       <div className={'site-wrapper-header'}>
@@ -25,7 +28,7 @@ const AppContainer = () => {
         <Account />
       </div>
       <div className={'site-wrapper-feed'}>
-        <Route path={'/login'} render={() => <Login />} />
+        {!isAuth && <Route path={'/login'} render={() => <Login />} />}
         <Route path={'/articles'} render={() => <Articles />} />
         <Route exact path={'/hiadmin'} render={() => <PrivateComponent />} />
       </div>

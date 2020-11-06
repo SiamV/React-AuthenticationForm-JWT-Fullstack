@@ -3,12 +3,14 @@ import * as axios from "axios";
 let defaultState = {
     email: '',
     password: '',
-    token: ''
+    token: '',
+    isAuth: false
 }
 
 const UPDATE_EMAIL = 'loginReducer/UPDATE_EMAIL';
 const UPDATE_PASSWORD = 'loginReducer/UPDATE_PASSWORD';
-const CREATE_TOKEN = 'loginReducer/CREATE_TOKEN'
+const CREATE_TOKEN = 'loginReducer/CREATE_TOKEN';
+const LOGOUT = 'loginReducer/LOGOUT';
 
 const loginReducer = (state = defaultState, action) => {
     switch (action.type) {
@@ -27,10 +29,21 @@ const loginReducer = (state = defaultState, action) => {
         case CREATE_TOKEN: {
             return {
                 ...state,
-                token: action.token, //need check what we got
+                token: action.token, 
+                isAuth: true,
                 password: '' 
             }
         }
+        case LOGOUT: {
+            localStorage.removeItem('token')
+            return {
+                ...state,
+                email: '',
+                password: '',
+                isAuth: false,
+            }
+        }
+
         default:
             return state;
     }
@@ -51,7 +64,12 @@ export const signInThunkCreator = (email, password) => async (dispatch) => {
         headers: { 'Content-Type': 'application/json' }
     })
     console.log(data)
-    dispatch({type: CREATE_TOKEN, token: data.data.token}) //need add data.token but now data doesn't have token.
+    if (data.data.token) {
+        dispatch({type: CREATE_TOKEN, token: data.data.token}) 
+        localStorage.setItem('token', data.data.token)
+    }
 }
+
+export const logOutAC = () => ({type: LOGOUT})
 
 export default loginReducer;

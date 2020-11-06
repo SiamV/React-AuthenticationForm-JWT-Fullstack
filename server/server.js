@@ -106,7 +106,7 @@ app.post("/v1/auth/user", async (req, res) => {
         const user = await User.findAndValidateUser(req.body)
         const payload = { uid: user.id }
         const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
-        res.json({ status: 'ok', token })
+        res.json({ status: 'ok', token, user })
     } catch (err) {
         res.json({ status: 'error', err })
     }
