@@ -12,6 +12,15 @@ module.exports = {
     port: 8080,
     historyApiFallback: true,
     hot: true,
+    proxy: [
+      {
+        context: ['/api', '/auth', '/ws'],
+        target: `http://localhost:8080`,
+        secure: false,
+        changeOrigin: true,
+        ws: false
+      }
+    ]
   },
   module: {
     rules: [

@@ -12,7 +12,6 @@
       "@babel/plugin-transform-runtime"
     ]
   },
-  "proxy": "http://localhost:8090/",
   "scripts": {
     "build": "webpack -p --mode production ",
     "dev": "concurrently \"yarn run watch:server\" \"yarn run watch:client \" ",
@@ -28,6 +27,7 @@
     "babel-preset-react": "^6.24.1",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",

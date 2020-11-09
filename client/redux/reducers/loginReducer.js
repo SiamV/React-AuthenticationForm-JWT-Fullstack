@@ -29,9 +29,9 @@ const loginReducer = (state = defaultState, action) => {
         case CREATE_TOKEN: {
             return {
                 ...state,
-                token: action.token, 
+                token: action.token,
                 isAuth: true,
-                password: '' 
+                password: ''
             }
         }
         case LOGOUT: {
@@ -60,16 +60,29 @@ export const setPasswordFieldAC = (password) => ({
 })
 
 export const signInThunkCreator = (email, password) => async (dispatch) => {
-    let data = await axios.post('http://localhost:8090/v1/auth/user', { email, password}, {
-        headers: { 'Content-Type': 'application/json' }
+    let data = await axios.post('http://localhost:8090/v1/auth/user', { email, password }, {
+        headers: { 'Content-Type': 'application/json' },
+        // withCredentials: true
     })
     console.log(data)
     if (data.data.token) {
-        dispatch({type: CREATE_TOKEN, token: data.data.token}) 
+        dispatch({ type: CREATE_TOKEN, token: data.data.token })
         localStorage.setItem('token', data.data.token)
     }
 }
 
-export const logOutAC = () => ({type: LOGOUT})
+export const AuthorizationThunkCreator = () => async (dispatch) => {
+    try{let data = await axios.get('http://localhost:8090/v1/authorization', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    })
+    if (data.data.token) {
+        dispatch({ type: CREATE_TOKEN, token: data.data.token })
+        localStorage.setItem('token', data.data.token)
+    }} catch(e) {
+        localStorage.removeItem('token')
+    }
+}
+
+export const logOutAC = () => ({ type: LOGOUT })
 
 export default loginReducer;

@@ -14,11 +14,11 @@ module.exports = (req, res, next) => {
             return res.status(401).json({message: 'Auth error'})
         }
 
-        const decoded = jwt.verify(token, config.secret)
-        req.user = decoded //user from?
+        const decoded = jwt.verify(token, config.get('secret'))
+        req.user = decoded //put data from decoded token
         next()
 
     } catch(e) {
-        return res.status(401).json({message: 'Auth error'})
+        return res.status(401).json({message: 'Auth some error'})
     }
 }

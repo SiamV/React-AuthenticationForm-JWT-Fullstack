@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const passport = require('passport');
@@ -8,6 +9,7 @@ const jwt = require('jsonwebtoken');
 
 const config = require("../config");
 const passportJWT = require('./manager/passport')
+const authMiddleWare = require('./manager/authMiddleware')
 
 const app = express();
 
@@ -16,6 +18,7 @@ const middleware = [
     passport.initialize(),
     bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }),
     bodyParser.json({ limit: '50mb', extended: true }),
+    cookieParser()
 ]
 middleware.forEach((it) => app.use(it))
 
@@ -100,27 +103,7 @@ app.get('/', (req, res) => {
     res.send('Hello server')
 })
 
-app.post("/v1/auth/user", async (req, res) => {
-    console.log(req.body)
-    try {
-        const user = await User.findAndValidateUser(req.body)
-        const payload = { uid: user.id }
-        const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
-        res.json({ status: 'ok', token, user })
-    } catch (err) {
-        res.json({ status: 'error', err })
-    }
-
-
-
-    // const user = new User({
-    //     email: req.body.email,
-    //     password: req.body.password
-    // })
-    // user.save()
-    // res.send(user)
-})
-
+//for registration new user
 app.post("/v1/auth/add/user", async (req, res) => {
     const user = new User({
         email: req.body.email,
@@ -129,6 +112,34 @@ app.post("/v1/auth/add/user", async (req, res) => {
     user.save()
     res.send(user)
 })
+
+//for login and create token
+app.post("/v1/auth/user", async (req, res) => {
+    console.log(req.body)
+    try {
+        const user = await User.findAndValidateUser(req.body)
+        const payload = { uid: user.id }
+        const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
+        res.cookie('token', token, { maxAge: 10 * 60 * 60 * 48 }) //if need get cookie with token
+        res.json({ status: 'ok', token, user })
+    } catch (err) {
+        res.json({ status: 'error', err })
+    }
+})
+
+//for authorization
+app.get("/v1/authorization", authMiddleWare,
+    async (req, res) => {
+        console.log(req.user)
+        try {
+            const user = await User.findOne({ _id: req.user.id })
+            const payload = { uid: user.id }
+            const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
+            res.json({ status: 'ok', token, user })
+        } catch (err) {
+
+        }
+    })
 
 // app.listen(config.port, () => {
     //     console.log(`server is working http://localhost:${config.port}`)
