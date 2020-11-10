@@ -1,3 +1,6 @@
+const webpack = require('webpack');
+const config = require("./config");
+
 module.exports = {
   entry: __dirname + '/client/main.js',
   output: {
@@ -9,18 +12,22 @@ module.exports = {
   mode: 'development',
   devServer: {
     host: 'localhost',
-    port: 8080,
+    port: 8080, //project
     historyApiFallback: true,
     hot: true,
     proxy: [
       {
         context: ['/api', '/auth', '/ws'],
-        target: `http://localhost:8080`,
+        target: `http://localhost:${config.port || 8090}`, //server
         secure: false,
         changeOrigin: true,
         ws: false
       }
-    ]
+    ],
+    overlay: {
+      warnings: true,
+      errors: true
+    }
   },
   module: {
     rules: [

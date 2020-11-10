@@ -1,9 +1,12 @@
 import * as axios from "axios";
+import Cookies from 'universal-cookie';
 
+const cookie = new Cookies()
 let defaultState = {
     email: '',
     password: '',
-    token: '',
+    token: cookie.get('token'), //if have cookie use token from them
+    user: {},
     isAuth: false
 }
 
@@ -30,12 +33,13 @@ const loginReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 token: action.token,
+                user: action.user,
                 isAuth: true,
                 password: ''
             }
         }
         case LOGOUT: {
-            localStorage.removeItem('token')
+            //and need clean cookie
             return {
                 ...state,
                 email: '',
@@ -60,29 +64,31 @@ export const setPasswordFieldAC = (password) => ({
 })
 
 export const signInThunkCreator = (email, password) => async (dispatch) => {
-    let data = await axios.post('http://localhost:8090/v1/auth/user', { email, password }, {
-        headers: { 'Content-Type': 'application/json' },
-        // withCredentials: true
-    })
-    console.log(data)
-    if (data.data.token) {
-        dispatch({ type: CREATE_TOKEN, token: data.data.token })
-        localStorage.setItem('token', data.data.token)
+    try {
+        let response = await axios.post('/api/v1/auth/user', { email, password }, {
+            headers: { 'Content-Type': 'application/json' },
+        })
+        console.log(response)
+        if (response.data.token) {
+            dispatch({ type: CREATE_TOKEN, token: response.data.token, user: response.data.user })
+        }
+    } catch (e) {
+
     }
 }
 
 export const AuthorizationThunkCreator = () => async (dispatch) => {
-    try{let data = await axios.get('http://localhost:8090/v1/authorization', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    })
-    if (data.data.token) {
-        dispatch({ type: CREATE_TOKEN, token: data.data.token })
-        localStorage.setItem('token', data.data.token)
-    }} catch(e) {
-        localStorage.removeItem('token')
+    try {
+        let response = await axios.get('/api/v1/authorization')
+        console.log(response)
+        if (response.data.token) {
+            dispatch({ type: CREATE_TOKEN, token: response.data.token })
+        }
+    } catch (e) {
+        // localStorage.removeItem('token')
     }
 }
 
-export const logOutAC = () => ({ type: LOGOUT })
+export const logOutAC = () => ({ type: LOGOUT }) //need clean cookie
 
 export default loginReducer;

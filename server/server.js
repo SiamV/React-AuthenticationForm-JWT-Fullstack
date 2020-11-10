@@ -99,12 +99,13 @@ User = mongoose.model('auth', userSchema, 'auth');
 module.exports = User;
 
 //create Rest API
+
 app.get('/', (req, res) => {
     res.send('Hello server')
 })
 
 //for registration new user
-app.post("/v1/auth/add/user", async (req, res) => {
+app.post("/api/v1/auth/add/user", async (req, res) => {
     const user = new User({
         email: req.body.email,
         password: req.body.password
@@ -114,30 +115,40 @@ app.post("/v1/auth/add/user", async (req, res) => {
 })
 
 //for login and create token
-app.post("/v1/auth/user", async (req, res) => {
+app.post("/api/v1/auth/user", async (req, res) => {
     console.log(req.body)
     try {
         const user = await User.findAndValidateUser(req.body)
-        const payload = { uid: user.id }
+
+        const payload = { uid: user._id }
         const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
-        res.cookie('token', token, { maxAge: 10 * 60 * 60 * 48 }) //if need get cookie with token
+        delete user.password
+        res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 }) 
         res.json({ status: 'ok', token, user })
     } catch (err) {
-        res.json({ status: 'error', err })
+        res.json({ status: 'error authentication', err })
     }
 })
 
 //for authorization
-app.get("/v1/authorization", authMiddleWare,
+app.get("/api/v1/authorization",
     async (req, res) => {
-        console.log(req.user)
+        if(req.method === 'OPTIONS') {
+            return next()
+        }
         try {
-            const user = await User.findOne({ _id: req.user.id })
-            const payload = { uid: user.id }
+            //decoded token in cookie
+            const decoded = jwt.verify(req.cookies.token, config.secret)
+            const user = await User.findById(decoded.uid)
+
+            //if have a cookie then
+            const payload = { uid: user._id }
             const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
+            delete user.password
+            res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 }) 
             res.json({ status: 'ok', token, user })
         } catch (err) {
-
+            res.json({ status: 'error authorization', err })
         }
     })
 
@@ -145,17 +156,17 @@ app.get("/v1/authorization", authMiddleWare,
     //     console.log(`server is working http://localhost:${config.port}`)
     // });
 
-    // app.get("/v1/auth/users", async (req, res) => {
+    // app.get("/api/v1/auth/users", async (req, res) => {
     //     const users = await User.find({})
     //     res.send(users)
     // })
 
-    // app.get("/v1/auth/users/:id", async (req, res) => {
+    // app.get("/api/v1/auth/users/:id", async (req, res) => {
     //     const user = await User.findOne({ _id: req.params.id })
     //     res.send(user)
     // })
 
-    // app.delete("/v1/auth/users/delete/:id", async (req, res) => {
+    // app.delete("/api/v1/auth/users/delete/:id", async (req, res) => {
     //     try {
     //         await User.deleteOne({ _id: req.params.id })
     //         res.status(204).send()

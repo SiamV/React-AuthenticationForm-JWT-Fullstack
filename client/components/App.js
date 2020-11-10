@@ -17,10 +17,13 @@ import {AuthorizationThunkCreator} from '../redux/reducers/loginReducer'
 //main structure project. Grid css
 const AppContainer = () => {
   const isAuth = useSelector(s => s.login.isAuth)
+  const token = useSelector(s => s.login.token)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(AuthorizationThunkCreator())
+    if (token) {
+      dispatch(AuthorizationThunkCreator())
+    }
   }, [])
 
   return (
