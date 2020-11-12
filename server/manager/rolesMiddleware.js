@@ -1,5 +1,5 @@
-// const passport = require('passport');
-import passport from 'passport';
+const passport = require('passport');
+// import passport from 'passport';
 
 const handleJWT = (req, res, roles, next) => {
     return async (err, user, info) => {
