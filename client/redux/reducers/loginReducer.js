@@ -39,7 +39,6 @@ const loginReducer = (state = defaultState, action) => {
             }
         }
         case LOGOUT: {
-            //and need clean cookie
             return {
                 ...state,
                 email: '',
@@ -80,15 +79,23 @@ export const signInThunkCreator = (email, password) => async (dispatch) => {
 export const AuthorizationThunkCreator = () => async (dispatch) => {
     try {
         let response = await axios.get('/api/v1/authorization')
-        console.log(response)
         if (response.data.token) {
             dispatch({ type: CREATE_TOKEN, token: response.data.token })
         }
     } catch (e) {
-        // localStorage.removeItem('token')
+
     }
 }
 
 export const logOutAC = () => ({ type: LOGOUT }) //need clean cookie
+
+export const SecretRoute = () => async (dispatch) => {
+    try {
+        let response = await axios.get('/api/v1/admin')
+        console.log(response)
+    } catch (e) {
+
+    }
+}
 
 export default loginReducer;

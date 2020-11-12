@@ -1,3 +1,16 @@
+// import express from 'express';
+// import mongoose from 'mongoose';
+// import bodyParser from 'body-parser';
+// import cookieParser from 'cookie-parser';
+// import bcrypt from 'bcrypt-nodejs';
+// import cors from 'cors';
+// import passport from 'passport';
+// import jwt from 'jsonwebtoken';
+
+// import config from "../config.js";
+// import passportJWT from './manager/passport.js';
+// import auth from './manager/rolesMiddleware.js';
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -8,8 +21,8 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
 const config = require("../config");
-const passportJWT = require('./manager/passport')
-const authMiddleWare = require('./manager/authMiddleware')
+const passportJWT = require('./manager/passport');
+const auth = require('./manager/rolesMiddleware');
 
 const app = express();
 
@@ -95,7 +108,8 @@ mongoose.connect(mongoURL = config.url, { useNewUrlParser: true, useUnifiedTopol
 })
 
 //create collection DB
-User = mongoose.model('auth', userSchema, 'auth');
+const User = mongoose.model('auth', userSchema, 'auth');
+// export default User;
 module.exports = User;
 
 //create Rest API
@@ -116,14 +130,13 @@ app.post("/api/v1/auth/add/user", async (req, res) => {
 
 //for login and create token
 app.post("/api/v1/auth/user", async (req, res) => {
-    console.log(req.body)
     try {
         const user = await User.findAndValidateUser(req.body)
 
         const payload = { uid: user._id }
         const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
         delete user.password
-        res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 }) 
+        res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 })
         res.json({ status: 'ok', token, user })
     } catch (err) {
         res.json({ status: 'error authentication', err })
@@ -133,7 +146,7 @@ app.post("/api/v1/auth/user", async (req, res) => {
 //for authorization
 app.get("/api/v1/authorization",
     async (req, res) => {
-        if(req.method === 'OPTIONS') {
+        if (req.method === 'OPTIONS') {
             return next()
         }
         try {
@@ -145,16 +158,18 @@ app.get("/api/v1/authorization",
             const payload = { uid: user._id }
             const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
             delete user.password
-            res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 }) 
+            res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 })
             res.json({ status: 'ok', token, user })
         } catch (err) {
             res.json({ status: 'error authorization', err })
         }
     })
 
-// app.listen(config.port, () => {
-    //     console.log(`server is working http://localhost:${config.port}`)
-    // });
+//for secret route
+app.get("/api/v1/admin", auth([]),
+    async (req, res) => {
+        res.json({ status: 'ok' })
+    })
 
     // app.get("/api/v1/auth/users", async (req, res) => {
     //     const users = await User.find({})

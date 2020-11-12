@@ -4,4 +4,5 @@ const config = {
     secret: 'secret' //secret word for hash
   }
   
+  // export default config;
   module.exports = config;

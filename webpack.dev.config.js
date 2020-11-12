@@ -1,5 +1,6 @@
-const webpack = require('webpack');
-const config = require("./config");
+const config = require('./config.js')
+// import config from "./config.js";
+
 
 module.exports = {
   entry: __dirname + '/client/main.js',

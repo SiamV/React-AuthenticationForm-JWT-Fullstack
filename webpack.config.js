@@ -27,3 +27,6 @@ module.exports = {
     ]
   }
 }
+
+// module.exports = config
+// // export default config;

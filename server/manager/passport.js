@@ -1,3 +1,7 @@
+// import passportJWT from 'passport-jwt';
+
+// import config from '../../config.js';
+// import User from '../server.js';
 
 const passportJWT = require('passport-jwt');
 
@@ -25,4 +29,6 @@ const jwtStrategy = new passportJWT.Strategy(jwtOption, (jwtPayload, done) => {
     })
 })
 
+
+// export default jwtStrategy;
 exports.jwt = jwtStrategy;

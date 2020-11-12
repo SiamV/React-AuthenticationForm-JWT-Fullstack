@@ -12,7 +12,7 @@ import Header from './Header/Header';
 import Account from './Account/Account';
 import Footer from './Footer/Footer';
 import PrivateComponent from './Private/PriviteComponent'
-import {AuthorizationThunkCreator} from '../redux/reducers/loginReducer'
+import {AuthorizationThunkCreator, SecretRoute} from '../redux/reducers/loginReducer'
 
 //main structure project. Grid css
 const AppContainer = () => {
@@ -20,9 +20,11 @@ const AppContainer = () => {
   const token = useSelector(s => s.login.token)
   const dispatch = useDispatch()
 
+  //start app
   useEffect(() => {
     if (token) {
       dispatch(AuthorizationThunkCreator())
+      dispatch(SecretRoute())
     }
   }, [])
 
