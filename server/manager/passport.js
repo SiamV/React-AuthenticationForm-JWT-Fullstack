@@ -6,7 +6,7 @@
 const passportJWT = require('passport-jwt');
 
 const config = require('../../config');
-const User = require('../server');
+const User = require('../server.js');
 
 const cookieExtractor = (req) => {
     return req && req.cookies && req.cookies.token

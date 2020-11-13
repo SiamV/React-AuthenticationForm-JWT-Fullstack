@@ -9,7 +9,7 @@
 
 // import config from "../config.js";
 // import passportJWT from './manager/passport.js';
-// import auth from './manager/rolesMiddleware.js';
+// import auth from './manager/rolesMiddleware.mjs';
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -22,7 +22,7 @@ const jwt = require('jsonwebtoken');
 
 const config = require("../config");
 const passportJWT = require('./manager/passport');
-const auth = require('./manager/rolesMiddleware');
+const auth = require('./manager/rolesMiddleware.js');
 
 const app = express();
 

@@ -39,10 +39,13 @@ const loginReducer = (state = defaultState, action) => {
             }
         }
         case LOGOUT: {
+            cookie.remove('token')
             return {
                 ...state,
                 email: '',
                 password: '',
+                token: '',
+                user: {},
                 isAuth: false,
             }
         }

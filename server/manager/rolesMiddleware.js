@@ -25,5 +25,5 @@ const auth = (roles = []) => (req, res, next) => {
     )(req, res, next)
 }
 
-// module.exports = auth;
-export default auth;
+module.exports = auth;
+// export default auth;
