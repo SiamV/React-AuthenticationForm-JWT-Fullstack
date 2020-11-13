@@ -103,7 +103,7 @@ mongoose.connection.on('error', (err) => {
 });
 mongoose.connect(mongoURL = config.url, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
     app.listen(config.port, () => {
-        console.log(`server is working http://localhost:${config.port}, project http://localhost:8080`)
+        console.log(`server is working http://localhost:${config.port}, project will be start http://localhost:8080`)
     });
 })
 
